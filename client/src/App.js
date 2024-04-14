@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import ChartComponent from './Chart';
 import './App.css';
 
@@ -8,6 +7,7 @@ const App = () => {
     item1: [],
     item2: [],
     item3: [],
+    item4: [],
   });
 
   useEffect(() => {
@@ -18,6 +18,7 @@ const App = () => {
         const response = await fetch('http://localhost:8000/system/info');
         // Transform textData into valid JSON format
         const response_text = await response.text()
+        console.log(response_text)
         const jsonData = JSON.parse(
           response_text
             // Replace "=" with ":" to convert to valid JSON format
@@ -26,13 +27,14 @@ const App = () => {
             .replace(/(\w+)(?=:)/g, '"$1"')
         );
 
-        const { disk, memory, cpu } = jsonData;
+        const { disk, memory, cpu, bandwidth } = jsonData;
 
         setData(prevData => ({
           ...prevData,
           item1: [...prevData.item1, cpu],
           item2: [...prevData.item2, memory],
           item3: [...prevData.item3, disk],
+          item4: [...prevData.item3, bandwidth]
         }));
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -82,7 +84,7 @@ const App = () => {
         </div>
         <div className="chart">
           <h2>Bandwidth Percentage</h2>
-          <ChartComponent data={data.item3} color='purple' />
+          <ChartComponent data={data.item4} color='purple' />
         </div>
       </div>
     </div>
